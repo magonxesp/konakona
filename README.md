@@ -16,7 +16,7 @@ Build frontend
 npm --prefix web run build
 ```
 
-Build binary execurable
+Build binary executable
 
 ```sh
 cargo build --release
