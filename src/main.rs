@@ -147,19 +147,6 @@ const DOWNLOADS_DIR: &str = "downloads";
 const SESSION_COOKIE: &str = "SESSION";
 const WEB_DIST_DIR: &str = "web/dist";
 
-/* fn download_path(id: &Uuid, format: &Format) -> std::io::Result<PathBuf> {
-    let exists = std::fs::exists(DOWNLOADS_DIR)?;
-
-    if !exists {
-        std::fs::create_dir(DOWNLOADS_DIR)?;
-    }
-
-    let filename = format!("{}{}", id.to_string(), format.file_extension());
-    let path = Path::new(DOWNLOADS_DIR).join(filename);
-
-    Ok(path)
-} */
-
 fn find_download(id: &Uuid) -> Option<PathBuf> {
     let files = std::fs::read_dir(DOWNLOADS_DIR);
     if let Err(err) = &files {
