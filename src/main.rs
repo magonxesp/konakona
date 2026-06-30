@@ -9,6 +9,7 @@ use std::{
     process::Command,
     str::FromStr,
     sync::{Arc, LazyLock, Mutex},
+    time::Duration,
 };
 use tokio_util::io::ReaderStream;
 use uuid::Uuid;
@@ -243,7 +244,10 @@ fn spawn_download_queue_job() -> std::thread::JoinHandle<()> {
         loop {
             let request = match QUEUE.pull() {
                 Some(request) => request,
-                None => continue,
+                None => {
+                    std::thread::sleep(Duration::from_millis(100));
+                    continue;
+                }
             };
 
             log::info!(
