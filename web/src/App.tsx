@@ -3,7 +3,7 @@ import './App.css'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Field, FieldLabel } from '@/components/ui/field'
-import konata from '@/assets/konata.jpg'
+import konata from '@/assets/konata.webp'
 import { Circle, CircleX, DownloadIcon, LoaderCircle } from 'lucide-react'
 import { useEffect, useState, type SubmitEventHandler } from 'react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -31,6 +31,23 @@ function App() {
   const [downloads, setDownloads] = useState<Download[]>([])
   const [statusInterval, setStatusInterval] = useState<number | undefined>(undefined)
 
+  useEffect(() => {
+    const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const updateDarkMode = (matches: boolean) => {
+      document.documentElement.classList.toggle('dark', matches)
+    }
+    const handleDarkModeChange = (event: MediaQueryListEvent) => {
+      updateDarkMode(event.matches)
+    }
+
+    updateDarkMode(darkModeQuery.matches)
+    darkModeQuery.addEventListener('change', handleDarkModeChange)
+
+    return () => {
+      darkModeQuery.removeEventListener('change', handleDarkModeChange)
+    }
+  }, [])
+
   const updateStatus = async () => {
     const response = await fetch('/api/status')
     const status = await response.json() as JobsStatus
@@ -43,6 +60,10 @@ function App() {
 
   const submitForm: SubmitEventHandler = (event) => {
     event.preventDefault()
+
+    if (url === '') {
+      return
+    }
 
     setSubmitting(true)
 
@@ -64,7 +85,10 @@ function App() {
         format: download.format
       })
     })
-      .then(() => setDownloads(prev => [download, ...prev]))
+      .then(() => {
+        setUrl('')
+        setDownloads(prev => [download, ...prev])
+      })
       .finally(() => setSubmitting(false))
   }
 
@@ -99,9 +123,9 @@ function App() {
   }, [downloads])
 
   return (
-    <main className="flex flex-col gap-3 max-w-lg mx-auto my-20">
-      <section className="flex flex-col items-center gap-6 px-3">
-        <img className="rounded-full shadow-xl border-foreground border-2 size-70" src={konata} alt="" />
+    <main className="flex flex-col gap-3 max-w-lg mx-auto my-5">
+      <section className="flex flex-col items-center px-3">
+        <img className="h-50 md:h-80" src={konata} alt="" />
         <Card className="w-full">
           <CardContent>
             <form className="flex flex-col gap-3" onSubmit={submitForm}>
@@ -116,6 +140,7 @@ function App() {
                 <Input
                   placeholder="https://www.youtube.com/watch?v=PYPZum8Pxvc"
                   type="text"
+                  value={url}
                   onChange={event => setUrl(event.target.value)}
                 />
               </Field>
