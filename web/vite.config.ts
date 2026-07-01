@@ -11,9 +11,22 @@ export default defineConfig({
     babel({ presets: [reactCompilerPreset()] }),
     tailwindcss(),
   ],
+  build: {
+    rollupOptions: {
+      input: {
+        app: path.resolve(__dirname, 'index.html'),
+        sw: path.resolve(__dirname, 'src/sw.ts')
+      },
+      output: {
+        entryFileNames: (chunk) => (chunk.name === 'sw')
+          ? 'sw.js'
+          : 'assets/[name]-[hash].js'
+      }
+    }
+  },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      '@': path.resolve(__dirname, './src'),
     },
   },
   server: {
