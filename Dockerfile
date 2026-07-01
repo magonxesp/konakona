@@ -25,6 +25,7 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir web
+RUN mkdir downloads
 
 COPY --from=web-builder /build/web/dist ./web/dist
 COPY --from=builder /build/target/release/konakona ./konakona
