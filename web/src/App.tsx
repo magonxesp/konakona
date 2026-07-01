@@ -182,6 +182,9 @@ function App() {
                     <a
                       href={`/api/download/${item.id}`}
                       className={buttonVariants({ variant: 'default', size: 'sm' })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      download
                     >
                       <DownloadIcon />
                       Download
